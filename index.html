@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Birthday Surprise 🎉</title>
+
+<style>
+body {
+  margin: 0;
+  font-family: 'Segoe UI', sans-serif;
+  color: white;
+  overflow-x: hidden;
+  background: radial-gradient(circle at bottom, #020617, #000000);
+  background-attachment: fixed;
+}
+
+/* stars */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  background-image:
+    radial-gradient(2px 2px at 20% 30%, white, transparent),
+    radial-gradient(2px 2px at 70% 60%, white, transparent),
+    radial-gradient(1.5px 1.5px at 40% 80%, white, transparent);
+  opacity: 0.8;
+  animation: twinkle 4s infinite alternate;
+  z-index: 0;
+}
+
+@keyframes twinkle {
+  from { opacity: 0.4; }
+  to { opacity: 1; }
+}
+
+/* center text */
+#countdown, #hurray {
+  position: absolute;
+  top: 40%;
+  width: 100%;
+  text-align: center;
+  z-index: 5;
+}
+
+#countdown {
+  font-size: 70px;
+  text-shadow: 0 0 25px #fff, 0 0 50px #fff;
+  animation: pulse 1s infinite;
+}
+
+@keyframes pulse {
+  50% { transform: scale(1.1); }
+}
+
+#hurray {
+  display: none;
+  font-size: 60px;
+  color: #ff4d6d;
+  text-shadow: 0 0 20px #ff4d6d;
+}
+
+#clickHint {
+  position: absolute;
+  top: 55%;
+  width: 100%;
+  text-align: center;
+  color: #ccc;
+  z-index: 5;
+}
+
+/* content */
+#content {
+  display: none;
+  padding: 20px;
+  position: relative;
+  z-index: 5;
+}
+
+h1 {
+  text-align: center;
+  display: none;
+  color: #ffd43b;
+}
+
+#slideshow {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+/* images */
+img {
+  width: 180px;
+  height: 180px;
+  object-fit: cover;
+  margin: 10px;
+  border-radius: 20px;
+  opacity: 0;
+  transform: translateY(20px);
+  transition: 0.5s;
+
+  /* glow */
+  box-shadow:
+    0 0 10px rgba(255,255,255,0.2),
+    0 0 20px rgba(255,255,255,0.1);
+}
+
+img.show {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+img:hover {
+  transform: scale(1.08);
+  box-shadow:
+    0 0 15px #ff4d6d,
+    0 0 25px #4dabf7,
+    0 0 35px #ffd43b,
+    0 0 55px rgba(255,255,255,0.3);
+}
+
+/* message */
+.message {
+  display: none;
+  max-width: 700px;
+  margin: 40px auto;
+  text-align: center;
+  line-height: 1.6;
+  color: #ddd;
+}
+
+/* hover hint */
+#hoverHint {
+  display: none;
+  text-align: center;
+  color: #ccc;
+}
+
+/* floating balls */
+.ball {
+  position: fixed;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  animation: float 10s infinite;
+  z-index: 1;
+}
+
+.ball.red { background:#ff4d6d; left:10%; top:90%; }
+.ball.blue { background:#4dabf7; left:40%; top:95%; }
+.ball.yellow { background:#ffd43b; left:70%; top:92%; }
+
+@keyframes float {
+  50% { transform: translateY(-200px); }
+}
+
+/* shooting star */
+.shooting-star {
+  position: fixed;
+  width: 2px;
+  height: 80px;
+  background: linear-gradient(white, transparent);
+  transform: rotate(45deg);
+  animation: shoot 1s linear;
+  z-index: 1;
+}
+
+@keyframes shoot {
+  to {
+    transform: translate(400px,400px) rotate(45deg);
+    opacity: 0;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<div class="ball red"></div>
+<div class="ball blue"></div>
+<div class="ball yellow"></div>
+
+<div id="countdown">10s</div>
+<div id="clickHint">👉 Click anywhere to start the surprise 🎶</div>
+<div id="hurray">🎉 HURRAY 🎉</div>
+
+<div id="content">
+  <h1 id="finalText">🎂 Happy Birthday Palak 🎂</h1>
+  <div id="slideshow"></div>
+  <p id="message" class="message"></p>
+  <div id="hoverHint">✨ Hover over images to see glow ✨</div>
+</div>
+
+<audio id="bgMusic" loop>
+  <source src="song.mp3" type="audio/mpeg">
+</audio>
+
+<script>
+let countdown = document.getElementById("countdown");
+let hurray = document.getElementById("hurray");
+let content = document.getElementById("content");
+let finalText = document.getElementById("finalText");
+
+let timeLeft = 10;
+
+let timer = setInterval(() => {
+  timeLeft--;
+  countdown.innerHTML = timeLeft + "s";
+
+  if (timeLeft <= 0) {
+    clearInterval(timer);
+    countdown.style.display = "none";
+    document.getElementById("clickHint").style.display = "none";
+
+    hurray.style.display = "block";
+    startStars();
+
+    setTimeout(() => {
+      hurray.style.display = "none";
+      content.style.display = "block";
+      showImages();
+    }, 1500);
+  }
+}, 1000);
+
+/* music on click */
+document.addEventListener("click", () => {
+  document.getElementById("bgMusic").play();
+}, { once: true });
+
+/* shooting stars */
+function startStars() {
+  let int = setInterval(() => {
+    let s = document.createElement("div");
+    s.className = "shooting-star";
+    s.style.top = Math.random()*50 + "%";
+    s.style.left = Math.random()*50 + "%";
+    document.body.appendChild(s);
+    setTimeout(() => s.remove(), 1000);
+  }, 300);
+
+  setTimeout(() => clearInterval(int), 1500);
+}
+
+/* images */
+let images = [
+  "img1.jpeg","img2.jpeg","img3.jpeg","img4.jpeg","img5.jpeg",
+  "img6.jpeg","img7.jpeg","img8.jpeg","img9.jpeg","img10.jpeg","img11.jpeg"
+];
+
+function showImages() {
+  let slide = document.getElementById("slideshow");
+  let i = 0;
+
+  let int = setInterval(() => {
+    if (i >= images.length) {
+      clearInterval(int);
+      showMessage();
+      return;
+    }
+
+    let img = document.createElement("img");
+    img.src = images[i];
+    slide.appendChild(img);
+
+    setTimeout(() => img.classList.add("show"), 100);
+    i++;
+  }, 700);
+}
+
+/* message */
+let text = `Oji, aaj toh aapka birthday hai ji 🎉😄
+Ab bolna toh kya hi hai… badhiya hai 😌
+
+Humein is baat ka thoda dukh rahega ki aap jaise log dharti par hain 🤭
+Tumhe meri is mehnat ke liye mujhe 'thank you' bolna chahiye 😎
+Par koi baat nahi… bas prarthna karo 🙏✨
+
+Aur zyada shaitani ki zarurat nahi 😏
+Board hai abki… maza aayega 📚😈
+
+Khush raho, aabaad raho 💖
+Chocolate mil jaye toh le lena 🍫😆
+
+🎂✨ HAPPY BIRTHDAY PALAK ✨🎂`;
+
+function showMessage() {
+  let msg = document.getElementById("message");
+  msg.style.display = "block";
+
+  let i = 0;
+  let t = setInterval(() => {
+    msg.innerHTML += text[i];
+    i++;
+
+    if (i >= text.length) {
+      clearInterval(t);
+      finalText.style.display = "block";
+      document.getElementById("hoverHint").style.display = "block";
+    }
+  }, 35);
+}
+</script>
+
+</body>
+</html>
