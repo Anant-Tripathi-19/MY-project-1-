@@ -248,6 +248,21 @@ let images = [
   "img6.jpeg.jpeg","img6.jpeg(2).jpeg","img8.jpeg.jpeg","img9.jpeg.jpeg","img10.jpeg.jpeg"
 ];
 
+function removeImage(filename) {
+  const slide = document.getElementById("slideshow");
+  const imgs = slide.getElementsByTagName("img");
+
+  // Loop backwards to safely remove elements
+  for (let i = imgs.length - 1; i >= 0; i--) {
+    if (imgs[i].src.includes(filename)) {
+      slide.removeChild(imgs[i]);
+    }
+  }
+}
+// remove img7 and img11
+removeImage("img7.jpeg.jpeg");
+removeImage("img11.jpeg.mp4");
+
 function showImages() {
   let slide = document.getElementById("slideshow");
   let i = 0;
