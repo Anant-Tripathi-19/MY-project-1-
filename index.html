@@ -259,11 +259,15 @@ function showImages() {
       return;
     }
 
-    let img = document.createElement("img");
-    img.src = images[i];
-    slide.appendChild(img);
+    // only create image if string is not empty
+    if(images[i]) {
+      let img = document.createElement("img");
+      img.src = images[i];
+      slide.appendChild(img);
 
-    setTimeout(() => img.classList.add("show"), 100);
+      setTimeout(() => img.classList.add("show"), 100);
+    }
+    
     i++;
   }, 700);
 }
